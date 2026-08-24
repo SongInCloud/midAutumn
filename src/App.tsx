@@ -55,7 +55,7 @@ const moonPhases = [
   { name: '娥眉月', day: '初三至初六', desc: '日落后的西方低空，一弯细月像眉梢，古人也称它为“蛾眉”。' },
   { name: '上弦月', day: '初七至初八', desc: '月亮西半面明亮，约在正午升起、午夜落下，黄昏时最适合观察。' },
   { name: '盈凸月', day: '十一至十四', desc: '亮面超过一半并逐日丰满，向望月靠近，月光也愈加充盈。' },
-  { name: '望月', day: '十五前后', desc: '地球大致位于太阳和月球之间，整个月面被照亮。最圆时刻并不一定恰好在中秋之夜。' },
+  { name: '满月', day: '十五前后', desc: '地球大致位于太阳和月球之间，整个月面被照亮。天文学中也称“望”，最圆时刻并不一定恰好在中秋之夜。' },
   { name: '亏凸月', day: '十六至二十', desc: '满月之后亮面渐亏，升起时间越来越晚，清晨仍可见于西方天空。' },
   { name: '下弦月', day: '廿二至廿三', desc: '月亮东半面明亮，通常在午夜升起、正午落下，适合黎明前观察。' },
   { name: '残月', day: '廿六至廿九', desc: '黎明前东方出现一弯细月，一个月相周期即将结束。' },
@@ -154,7 +154,7 @@ export default function App() {
 
     <section className="moon-lab dark-section" id="moon">
       <Reveal><SectionTitle light kicker="柒 · 共赏明月" title="月有盈亏，自有它的次序" intro="拖动月相尺，观察一个朔望月里的光影变化。中秋常逢满月，但最圆时刻并不总在十五。"/></Reveal>
-      <Reveal className="moon-lab-layout"><div className="phase-stage"><div className="orbit-ring"/><div className={'phase-sphere phase-sphere-' + phase}/><span>{moonPhases[phase].name}</span></div><div className="phase-control"><small>{moonPhases[phase].day}</small><h3>{moonPhases[phase].name}</h3><p>{moonPhases[phase].desc}</p><input type="range" min="0" max="7" step="1" value={phase} onChange={e => setPhase(Number(e.target.value))} aria-label="拖动观察月相"/><div className="phase-scale">{moonPhases.map((item, i) => <button key={item.name} className={i === phase ? 'active' : ''} onClick={() => setPhase(i)} aria-label={'查看' + item.name}><i/></button>)}</div><aside><CircleDot size={17}/><span><b>你知道吗？</b>“十五的月亮十六圆”并非固定规律。月球绕地球运动速度并不均匀，望月可能出现在农历十四至十七。</span></aside></div></Reveal>
+      <Reveal className="moon-lab-layout"><div className="phase-stage"><div className="orbit-ring"/><div className={'phase-sphere phase-sphere-' + phase}/><span>{moonPhases[phase].name}</span></div><div className="phase-control"><small>{moonPhases[phase].day}</small><h3>{moonPhases[phase].name}</h3><p>{moonPhases[phase].desc}</p><input type="range" min="0" max="7" step="1" value={phase} onChange={e => setPhase(Number(e.target.value))} aria-label="拖动观察月相"/><div className="phase-scale">{moonPhases.map((item, i) => <button key={item.name} className={i === phase ? 'active' : ''} onClick={() => setPhase(i)} aria-label={'查看' + item.name}><i className={'mini-phase mini-phase-' + i}/><span>{item.name}</span></button>)}</div><aside><CircleDot size={17}/><span><b>你知道吗？</b>“十五的月亮十六圆”并非固定规律。月球绕地球运动速度并不均匀，望月可能出现在农历十四至十七。</span></aside></div></Reveal>
     </section>
 
     <footer><div className="footer-mark"><Moon fill="currentColor"/><span>月满人间<small>中秋文化志</small></span></div><p>愿人长久，千里共婵娟。</p><div className="footer-links"><a href="#overview"><BookOpen size={15}/>内容导览</a><a href="#customs"><Flower2 size={15}/>人间风俗</a><a href="#food"><Utensils size={15}/>一口团圆</a><a href="#top"><ArrowUp size={15}/>回到月下</a></div><small>内容为传统文化普及用途 · 传说部分均已标注非史实属性</small></footer>
