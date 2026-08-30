@@ -46,6 +46,46 @@ function FloatingClouds({ pale = false }: { pale?: boolean }) {
   </div>
 }
 
+function createSeededRandom(seed: number) {
+  let state = seed >>> 0
+  return () => {
+    state += 0x6D2B79F5
+    let value = state
+    value = Math.imul(value ^ (value >>> 15), value | 1)
+    value ^= value + Math.imul(value ^ (value >>> 7), value | 61)
+    return ((value ^ (value >>> 14)) >>> 0) / 4294967296
+  }
+}
+
+function StarField({ count = 84, seed = 815, className = '' }: { count?: number; seed?: number; className?: string }) {
+  const random = createSeededRandom(seed)
+  const stars = Array.from({ length: count }, (_, index) => {
+    const brightness = random()
+    const size = brightness > .94 ? 3.6 + random() * 1.8 : brightness > .72 ? 1.8 + random() * 1.6 : .65 + random() * 1.25
+    return {
+      x: 1 + random() * 98,
+      y: 2 + random() * 94,
+      size,
+      opacity: .22 + brightness * .72,
+      duration: 2.4 + random() * 4.8,
+      delay: random() * -6,
+      warm: random() > .82,
+      index,
+    }
+  })
+
+  return <div className={'star-field ' + className} aria-hidden="true">
+    {stars.map(star => <i key={star.index} className={star.warm ? 'is-warm' : ''} style={{
+      '--star-x': star.x + '%',
+      '--star-y': star.y + '%',
+      '--star-size': star.size + 'px',
+      '--star-opacity': star.opacity,
+      '--star-duration': star.duration + 's',
+      '--star-delay': star.delay + 's',
+    } as CSSProperties}/>)}
+  </div>
+}
+
 function SceneHeading({ number, eyebrow, title, text, align = 'left' }: { number: string; eyebrow: string; title: string; text: string; align?: 'left' | 'right' }) {
   return <div className={'scene-heading scene-heading--' + align}>
     <span>{number} · {eyebrow}</span><h2>{title}</h2><p>{text}</p>
@@ -67,7 +107,7 @@ export function LandingPage() {
 
   return <main className="portal-page" onPointerMove={handlePointer}>
     <div className="portal-night"/>
-    <div className="portal-stars" aria-hidden="true">{Array.from({ length: 36 }, (_, i) => <i key={i} style={{ '--x': ((i * 43) % 96) + '%', '--y': ((i * 59) % 88) + '%', '--d': ((i % 8) * .35) + 's' } as CSSProperties}/>)}</div>
+    <StarField count={96} seed={815} className="portal-stars"/>
     <FloatingClouds/>
     <div className="portal-branch portal-branch--left"><i/><i/><i/><i/><i/></div>
     <div className="portal-branch portal-branch--right"><i/><i/><i/></div>
@@ -159,7 +199,7 @@ export function JourneyPage() {
         </header>
 
         <section className="journey-scene scene-prologue">
-          <div className="scene-stars"/><FloatingClouds/>
+          <StarField count={118} seed={2026} className="scene-stars"/><FloatingClouds/>
           <div className="giant-moon" data-depth="far"><i/><i/><i/></div>
           <AssetPlaceholder name="月宫仙鹤" assetKey="character.crane-flying" className="crane-placeholder" color="#c8c1ad"/>
           <div className="silhouette-mountains" data-depth="middle"><i/><i/><i/></div>
@@ -256,7 +296,7 @@ export function JourneyPage() {
 export function AtlasPage() {
   return <main className="atlas-page">
     <header><a href="/"><ArrowLeft/>返回月门</a><div><span>月满人间</span><small>月下舆图</small></div><a href="/journey">进入长卷<ArrowRight/></a></header>
-    <div className="atlas-stars"/>
+    <StarField count={104} seed={1508} className="atlas-stars"/>
     <section className="atlas-copy"><span>MAP OF THE MOONLIT JOURNEY</span><h1>月下舆图</h1><p>这里没有必须完成的章节。选择一处地标，<br/>从你感兴趣的地方进入长卷。</p></section>
     <div className="atlas-map">
       <svg className="atlas-path" viewBox="0 0 1200 500" preserveAspectRatio="none"><path d="M30,320 C170,90 300,90 400,270 S620,450 720,220 S930,55 1160,245"/><path className="atlas-path-glow" d="M30,320 C170,90 300,90 400,270 S620,450 720,220 S930,55 1160,245"/></svg>
@@ -266,4 +306,3 @@ export function AtlasPage() {
     <div className="atlas-legend"><Compass/><span>拖动长卷时，右上角月纹可随时返回此处</span></div>
   </main>
 }
-
