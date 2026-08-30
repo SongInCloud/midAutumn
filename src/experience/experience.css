@@ -298,3 +298,67 @@
   .scene-rail{right:-18px}.scene-rail button b{display:none}.info-sheet h2{font-size:38px}
   .atlas-page>header{padding:18px 14px}.atlas-page>header>div{font-size:17px}.atlas-page>header>a{font-size:0}.atlas-page>header>a svg{width:21px}.atlas-copy{margin-top:2vh}.atlas-copy p{display:none}.atlas-map{height:69vh;min-height:500px}.atlas-node i{width:42px;height:42px}.atlas-node b{font-size:15px}.atlas-node small{display:none}.atlas-legend{left:18px;right:18px;bottom:2vh}
 }
+/* Paper-relief art direction, aligned to supplied artwork */
+:root{--night:#0b0908;--night-2:#171311;--ink:#17191a;--paper:#e8ddc5;--gold:#b99552;--gold-pale:#ead6a1;--cinnabar:#8f3529;--jade:#53665f;--blue:#263d50}
+.portal-page,.journey-page,.atlas-page{background:#0b0908}
+.portal-page::before,.journey-stage::before,.atlas-page::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle at 62% 38%,rgba(156,115,68,.16),transparent 31%),radial-gradient(circle at 35% 70%,rgba(32,60,76,.18),transparent 38%),linear-gradient(115deg,rgba(0,0,0,.46),transparent 37%,rgba(77,47,30,.08) 70%,rgba(0,0,0,.48))}
+.portal-page::after,.journey-stage::after,.atlas-page::after{opacity:.24;mix-blend-mode:overlay}
+.portal-night{background:radial-gradient(circle at 56% 42%,#4d4337 0,#232322 22%,#11181c 48%,#070707 78%)}
+.portal-night::before{background:linear-gradient(90deg,rgba(0,0,0,.72),transparent 36%,transparent 68%,rgba(0,0,0,.66))}
+.moon-gate-ring{border-color:#b79b65;box-shadow:inset 0 0 0 4px #4f3d28,0 0 65px rgba(204,166,92,.2),0 20px 70px #0009}
+.moon-gate-world{background:linear-gradient(#495458 0 52%,#20282a 53%,#111414)}
+.portal-world-moon{background:#e7d6aa;box-shadow:0 0 45px rgba(232,204,139,.75);border:1px solid #f2e5bf}
+.portal-copy h1,.scene-heading h2,.finale-copy h2,.atlas-copy h1{color:#ede2c7;text-shadow:0 5px 22px #000,0 0 1px #c9a65e}
+.portal-copy h1 em,.finale-copy h2 em{color:#c69b57}
+.portal-copy p,.scene-heading span,.finale-copy>span{color:#c6a25c}
+.portal-copy>span,.scene-heading p,.atlas-copy p{color:#b8b1a3}
+.journey-stage{background:#100d0b}
+.journey-header{background:linear-gradient(rgba(7,6,5,.9),rgba(7,6,5,.22),transparent)}
+.journey-brand,.journey-header>div button,.journey-header>div a{color:#e9ddbd}
+.journey-header>div button,.journey-header>div a{border-color:rgba(192,157,89,.42);background:rgba(11,10,9,.55);box-shadow:inset 0 0 16px rgba(196,156,79,.05)}
+.journey-scene{isolation:isolate}
+.scene-heading{padding-left:18px;border-left:1px solid rgba(185,149,82,.52)}
+.art-placeholder{color:#ded4bd;background:linear-gradient(145deg,rgba(57,67,68,.94),rgba(25,27,27,.96))!important;border-color:rgba(185,151,88,.48);box-shadow:0 18px 34px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,245,214,.14);filter:saturate(.68) sepia(.1)}
+.art-placeholder::before{border-color:rgba(222,197,139,.3)}
+.art-placeholder .art-shadow{background:linear-gradient(125deg,rgba(247,231,190,.12),transparent 40%,rgba(0,0,0,.34))}
+.art-placeholder span{color:#e2d6ba;font-weight:500}
+.art-placeholder small{color:#978b76}
+.art-image{position:absolute;z-index:12;margin:0;pointer-events:none;transform-origin:center;filter:drop-shadow(0 24px 20px rgba(0,0,0,.52));animation:paper-float 7s ease-in-out infinite}
+.art-image img{display:block;width:100%;height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none}
+@keyframes paper-float{0%,100%{translate:0 0}50%{translate:0 -8px}}
+.crane-artwork{right:2.5%;top:8%;width:min(39vw,680px);height:auto;transform:rotate(-4deg)}
+.finale-crane-artwork{right:2%;top:12%;width:min(31vw,530px);height:auto;transform:rotate(-8deg);opacity:.92}
+.market-people-artwork{z-index:17;left:17%;bottom:-2%;width:70%;height:auto;filter:drop-shadow(0 28px 24px rgba(0,0,0,.64));animation-duration:9s}
+@media(max-width:800px){.crane-artwork{right:-13%;top:21%;width:62vw;opacity:.86}.market-people-artwork{left:-5%;bottom:1%;width:110%;opacity:.92}.finale-crane-artwork{right:-12%;top:18%;width:55vw}}
+
+.scene-prologue{background:radial-gradient(circle at 62% 42%,#4b4338 0,#293136 24%,#10191f 51%,#070707 82%)}
+.giant-moon{background:radial-gradient(circle at 35% 30%,#f1e5c8,#dfc98f 67%,#9e7944);border:1px solid rgba(244,226,178,.7);box-shadow:0 0 90px rgba(221,185,111,.34),0 0 220px rgba(173,126,72,.14)}
+.giant-moon::before{content:'';position:absolute;inset:0;border-radius:50%;opacity:.2;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence baseFrequency='.32' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='.32'/%3E%3C/svg%3E");mix-blend-mode:multiply}
+.scene-stars{opacity:.42}
+.silhouette-mountains i{background:#090b0b}.silhouette-mountains i:nth-child(2){background:#101515}.silhouette-mountains i:nth-child(3){background:#050606}
+.scene-palace{background:linear-gradient(#343d40 0 51%,#222724 52%,#0e0e0d);box-shadow:inset 0 -150px 150px #080706}
+.palace-moon{background:#dfcda3;box-shadow:0 0 70px rgba(213,177,102,.35)}
+.paper-railing{border-color:#9d8457;background:linear-gradient(rgba(55,56,50,.3),#151817)}
+.paper-railing i{border-color:#8e7952}
+.scene-landscape{background:linear-gradient(#4b5758,#77796e 49%,#334442 50%,#172321);box-shadow:inset 0 -120px 120px #090b0b}
+.landscape-moon{background:#dfcca1;box-shadow:0 0 55px rgba(209,171,96,.4)}
+.poem-scroll{color:#302b23;background:#dfd2b4;box-shadow:0 25px 50px #090807aa,4px 0 0 rgba(95,69,39,.2)}
+.poem-scroll::before,.poem-scroll::after{background:#aa9060}
+.scene-market{background:radial-gradient(circle at 65% 55%,rgba(146,66,40,.32),transparent 32%),linear-gradient(#17222c 0 49%,#35231f 50%,#120d0b)}
+.market-sky{background:radial-gradient(circle at 14% 22%,#dfc88f 0 7%,#323b42 7.4%,transparent 8%),radial-gradient(circle at 62% 62%,rgba(166,69,39,.27),transparent 27%),linear-gradient(#182733,#302522 58%,#100c0b)}
+.lantern-lines{z-index:22}.lantern-lines button{background:#a9482e;box-shadow:0 0 18px #d4783b,0 0 38px rgba(188,77,39,.45);border:1px solid #d49d5f}
+.shop-placeholder,.street-buildings,.city-tower{filter:saturate(.55) sepia(.16) brightness(.76)}
+.fire-dragon{filter:saturate(.82) sepia(.12)}
+.scene-flavors{color:#302b24;background:radial-gradient(circle at 50% 47%,#dbcaa4,#a58d69 67%,#4e3a2c)}
+.paper-table{border-color:rgba(99,70,37,.42);box-shadow:inset 0 0 120px rgba(73,45,25,.28),0 30px 80px #15100c88}
+.food-piece{background:#bc9256;border-color:#66492d;box-shadow:0 10px 20px #3c281c66,inset 0 0 0 7px #ddc28d}.food-piece.active{background:#8f392d}
+.scene-reunion{background:linear-gradient(#151f24 0 54%,#28211c 55%);box-shadow:inset 0 -100px 120px #0b0806}
+.reunion-night{background:radial-gradient(circle at 53% 34%,#51453a,#253035 42%,#0d1215 75%)}
+.window-frame,.window-frame::before,.window-frame::after{border-color:#171311}
+.warm-lamp{background:#d18a46;box-shadow:0 0 45px #d9843d,0 0 100px rgba(176,74,35,.48)}
+.scene-finale{background:radial-gradient(circle at 50% 42%,#4d4438,#253035 31%,#0a1014 65%,#050505 90%)}
+.finale-moon{background:#e5d3a5;border:1px solid #f2e3bb;box-shadow:0 0 90px rgba(216,180,107,.4),0 0 220px rgba(145,97,55,.18)}
+.golden-path path{stroke:#c69d58;filter:drop-shadow(0 0 7px rgba(204,157,76,.7))}
+.info-mask{background:rgba(7,6,5,.76)}.info-sheet{color:#302b23;background:#dfd1b1;box-shadow:-25px 0 70px #000c}
+.atlas-page{color:#e9dfc5;background:radial-gradient(circle at 50% 48%,#3f4540,#1d292d 43%,#090a0a 82%)}
+.atlas-node i{border-color:#ac8b50;background:#171a19;box-shadow:0 12px 25px #0009}.atlas-node:hover i{color:#17130e;background:#c39d59}

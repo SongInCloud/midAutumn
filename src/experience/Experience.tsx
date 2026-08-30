@@ -1,6 +1,8 @@
 import { CSSProperties, useLayoutEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import craneArtwork from '../../iamge/核心角色/月宫仙鹤.png'
+import marketPeopleArtwork from '../../iamge/核心角色/灯市人物组.png'
 import {
   ArrowDown, ArrowLeft, ArrowRight, BookOpen, ChevronRight, Compass,
   Map, Moon, Music2, Sparkles, Volume2, X,
@@ -38,6 +40,12 @@ function AssetPlaceholder({ name, assetKey, className = '', color = '#55708d' }:
     <i className="art-shadow"/><i className="art-paper"/><i className="art-cut"/>
     <span>{name}</span><small>{assetKey}</small>
   </div>
+}
+
+function ArtImage({ src, alt, assetKey, className = '' }: { src: string; alt: string; assetKey: string; className?: string }) {
+  return <figure className={'art-image ' + className} data-asset-key={assetKey}>
+    <img src={src} alt={alt}/>
+  </figure>
 }
 
 function FloatingClouds({ pale = false }: { pale?: boolean }) {
@@ -201,7 +209,7 @@ export function JourneyPage() {
         <section className="journey-scene scene-prologue">
           <StarField count={118} seed={2026} className="scene-stars"/><FloatingClouds/>
           <div className="giant-moon" data-depth="far"><i/><i/><i/></div>
-          <AssetPlaceholder name="月宫仙鹤" assetKey="character.crane-flying" className="crane-placeholder" color="#c8c1ad"/>
+          <ArtImage src={craneArtwork} alt="展翅飞过月面的丹顶仙鹤纸雕" assetKey="character.crane-flying" className="crane-artwork"/>
           <div className="silhouette-mountains" data-depth="middle"><i/><i/><i/></div>
           <SceneHeading number="序" eyebrow="三秋恰半" title="穿云见月" text="中秋之名，取秋季正中之意。从祭月、赏月到家人团聚，一轮圆月承载了千年的心意。"/>
           <button className="scroll-cue" onClick={() => scrollToScene(1)}><span>循月光前行</span><ArrowDown/></button>
@@ -243,6 +251,7 @@ export function JourneyPage() {
           <div className="market-sky" data-depth="far"/>
           <AssetPlaceholder name="城楼剪影" assetKey="lantern-market.city-tower" className="city-tower" color="#344d68"/>
           <AssetPlaceholder name="古城街屋组" assetKey="lantern-market.street-buildings" className="street-buildings" color="#4d6172"/>
+          <ArtImage src={marketPeopleArtwork} alt="提灯游赏的中秋灯市人物纸雕组" assetKey="lantern-market.people-group" className="market-people-artwork"/>
           <AssetPlaceholder name="月饼铺" assetKey="lantern-market.mooncake-shop" className="shop-placeholder shop-mooncake" color="#77604d"/>
           <AssetPlaceholder name="桂花酒摊" assetKey="lantern-market.osmanthus-wine-stall" className="shop-placeholder shop-wine" color="#67594b"/>
           <AssetPlaceholder name="舞火龙" assetKey="lantern-market.fire-dragon" className="fire-dragon" color="#ae5339"/>
@@ -276,7 +285,7 @@ export function JourneyPage() {
         <section className="journey-scene scene-finale">
           <div className="finale-moon" data-depth="far"/>
           <div className="finale-city" data-depth="middle">{Array.from({ length: 28 }, (_, i) => <i key={i} style={{ '--h': (25 + (i * 17) % 65) + 'px', '--d': ((i % 8) * .12) + 's' } as CSSProperties}/>)}</div>
-          <AssetPlaceholder name="月宫仙鹤" assetKey="character.crane-flying" className="finale-crane" color="#d3cbb5"/>
+          <ArtImage src={craneArtwork} alt="飞向万家灯火的丹顶仙鹤纸雕" assetKey="character.crane-flying" className="finale-crane-artwork"/>
           <div className="golden-path" data-depth="near"><svg viewBox="0 0 1000 260" preserveAspectRatio="none"><path d="M-20,210 C150,30 290,280 450,120 S760,20 1040,90"/></svg></div>
           <div className="finale-copy"><span>终 · 天涯此时</span><h2>海上生明月<br/><em>天涯共此时</em></h2><p>愿所有相隔千里的思念，<br/>都能在今夜，被同一轮月光照见。</p><div><button onClick={() => scrollToScene(0)}>再游一遍</button><a href="/atlas">展开月下舆图</a></div></div>
         </section>
