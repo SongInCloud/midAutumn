@@ -1,0 +1,269 @@
+import { CSSProperties, useLayoutEffect, useRef, useState } from 'react'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import {
+  ArrowDown, ArrowLeft, ArrowRight, BookOpen, ChevronRight, Compass,
+  Map, Moon, Music2, Sparkles, Volume2, X,
+} from 'lucide-react'
+
+gsap.registerPlugin(ScrollTrigger)
+
+const sceneMeta = [
+  { key: 'prologue', index: '序', title: '穿云见月', subtitle: '三秋恰半' },
+  { key: 'moon-palace', index: '壹', title: '月宫清辉', subtitle: '神话与想象' },
+  { key: 'landscape', index: '贰', title: '山水诗境', subtitle: '月照古今' },
+  { key: 'lantern-market', index: '叁', title: '古城灯市', subtitle: '风俗人间' },
+  { key: 'flavors', index: '肆', title: '一口团圆', subtitle: '四方风味' },
+  { key: 'reunion', index: '伍', title: '人间团圆', subtitle: '万家灯火' },
+  { key: 'finale', index: '终', title: '万家共月', subtitle: '天涯此时' },
+]
+
+const poemData = [
+  { line: '海上生明月，天涯共此时。', author: '〔唐〕张九龄', note: '望月怀远' },
+  { line: '露从今夜白，月是故乡明。', author: '〔唐〕杜甫', note: '月夜忆舍弟' },
+  { line: '但愿人长久，千里共婵娟。', author: '〔宋〕苏轼', note: '水调歌头' },
+]
+
+const foodData = [
+  { name: '广式', note: '皮薄馅丰', text: '莲蓉与咸蛋黄层层相合，油润细腻。' },
+  { name: '苏式', note: '酥层分明', text: '水油皮包裹油酥，甜咸皆有江南风味。' },
+  { name: '滇式', note: '咸甜交织', text: '云腿与蜂蜜相遇，留下独特的高原风味。' },
+  { name: '京式', note: '端正醇厚', text: '传统印纹与规整形制，保留北方气质。' },
+]
+
+type InfoContent = { kicker: string; title: string; text: string; quote?: string }
+
+function AssetPlaceholder({ name, assetKey, className = '', color = '#55708d' }: { name: string; assetKey: string; className?: string; color?: string }) {
+  return <div className={'art-placeholder ' + className} data-asset-key={assetKey} style={{ '--asset-color': color } as CSSProperties}>
+    <i className="art-shadow"/><i className="art-paper"/><i className="art-cut"/>
+    <span>{name}</span><small>{assetKey}</small>
+  </div>
+}
+
+function FloatingClouds({ pale = false }: { pale?: boolean }) {
+  return <div className={'css-clouds' + (pale ? ' css-clouds--pale' : '')} aria-hidden="true">
+    <i/><i/><i/><i/><i/>
+  </div>
+}
+
+function SceneHeading({ number, eyebrow, title, text, align = 'left' }: { number: string; eyebrow: string; title: string; text: string; align?: 'left' | 'right' }) {
+  return <div className={'scene-heading scene-heading--' + align}>
+    <span>{number} · {eyebrow}</span><h2>{title}</h2><p>{text}</p>
+  </div>
+}
+
+function Hotspot({ label, className = '', onClick }: { label: string; className?: string; onClick: () => void }) {
+  return <button className={'scene-hotspot ' + className} onClick={onClick}><i/><span>{label}</span></button>
+}
+
+export function LandingPage() {
+  const handlePointer = (event: React.PointerEvent<HTMLElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect()
+    const x = ((event.clientX - rect.left) / rect.width - .5) * 2
+    const y = ((event.clientY - rect.top) / rect.height - .5) * 2
+    event.currentTarget.style.setProperty('--mx', String(x))
+    event.currentTarget.style.setProperty('--my', String(y))
+  }
+
+  return <main className="portal-page" onPointerMove={handlePointer}>
+    <div className="portal-night"/>
+    <div className="portal-stars" aria-hidden="true">{Array.from({ length: 36 }, (_, i) => <i key={i} style={{ '--x': ((i * 43) % 96) + '%', '--y': ((i * 59) % 88) + '%', '--d': ((i % 8) * .35) + 's' } as CSSProperties}/>)}</div>
+    <FloatingClouds/>
+    <div className="portal-branch portal-branch--left"><i/><i/><i/><i/><i/></div>
+    <div className="portal-branch portal-branch--right"><i/><i/><i/></div>
+    <div className="moon-gate">
+      <div className="moon-gate-ring"><i/><i/><i/></div>
+      <div className="moon-gate-world">
+        <AssetPlaceholder name="月宫主殿" assetKey="moon-palace.main-hall" className="portal-palace" color="#4f6989"/>
+        <div className="portal-mountains"><i/><i/><i/></div>
+        <span className="portal-world-moon"/>
+      </div>
+    </div>
+    <section className="portal-copy">
+      <p>八月十五 · 中秋文化数字长卷</p>
+      <h1>月满<br/><em>人间</em></h1>
+      <blockquote>一幅可以走进去的中秋长卷</blockquote>
+      <span>循一线月光，越过月宫、山河与灯火。<br/>所见不是章节，而是同一轮月亮下的万千人间。</span>
+    </section>
+    <div className="portal-actions">
+      <a className="enter-button" href="/journey"><span>入画</span><ArrowRight/></a>
+      <a className="atlas-button" href="/atlas"><Map/><span>展开舆图</span></a>
+    </div>
+    <div className="portal-note"><span>SCROLL-DRIVEN PAPER WORLD</span><i/></div>
+  </main>
+}
+
+export function JourneyPage() {
+  const shellRef = useRef<HTMLDivElement>(null)
+  const stageRef = useRef<HTMLDivElement>(null)
+  const [activeScene, setActiveScene] = useState(0)
+  const [info, setInfo] = useState<InfoContent | null>(null)
+  const [poem, setPoem] = useState(0)
+  const [food, setFood] = useState(0)
+  const [soundOn, setSoundOn] = useState(false)
+
+  const scrollToScene = (index: number) => {
+    const shell = shellRef.current
+    if (!shell) return
+    const range = shell.offsetHeight - window.innerHeight
+    window.scrollTo({ top: shell.offsetTop + range * (index / (sceneMeta.length - 1)), behavior: 'smooth' })
+  }
+
+  useLayoutEffect(() => {
+    const shell = shellRef.current
+    const stage = stageRef.current
+    if (!shell || !stage) return
+
+    const context = gsap.context(() => {
+      const scenes = gsap.utils.toArray<HTMLElement>('.journey-scene', stage)
+      gsap.set(scenes, { autoAlpha: 0, scale: .96 })
+      gsap.set(scenes[0], { autoAlpha: 1, scale: 1 })
+
+      const timeline = gsap.timeline({
+        defaults: { ease: 'none' },
+        scrollTrigger: {
+          trigger: shell,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 1.05,
+          invalidateOnRefresh: true,
+          onUpdate: self => setActiveScene(Math.min(scenes.length - 1, Math.floor(self.progress * scenes.length))),
+        },
+      })
+
+      scenes.forEach((scene, index) => {
+        const at = index
+        if (index > 0) {
+          timeline.to(scenes[index - 1], { autoAlpha: 0, scale: 1.055, duration: .42 }, at - .42)
+          timeline.fromTo(scene, { autoAlpha: 0, scale: .93 }, { autoAlpha: 1, scale: 1, duration: .48 }, at - .44)
+        }
+        timeline.fromTo(scene.querySelectorAll('[data-depth="far"]'), { xPercent: -3 }, { xPercent: 3, duration: 1 }, at)
+        timeline.fromTo(scene.querySelectorAll('[data-depth="middle"]'), { xPercent: -6 }, { xPercent: 7, duration: 1 }, at)
+        timeline.fromTo(scene.querySelectorAll('[data-depth="near"]'), { xPercent: -11 }, { xPercent: 13, duration: 1 }, at)
+      })
+
+      const requested = new URLSearchParams(window.location.search).get('scene')
+      const targetIndex = sceneMeta.findIndex(item => item.key === requested)
+      if (targetIndex > 0) requestAnimationFrame(() => scrollToScene(targetIndex))
+    }, stage)
+
+    return () => context.revert()
+  }, [])
+
+  return <main className="journey-page">
+    <div className="journey-shell" ref={shellRef}>
+      <div className="journey-stage" ref={stageRef}>
+        <header className="journey-header">
+          <a href="/" className="journey-brand"><Moon fill="currentColor"/><span>月满人间<small>动态纸雕长卷</small></span></a>
+          <div><button onClick={() => setSoundOn(!soundOn)} aria-label={soundOn ? '关闭声音' : '开启声音'} className={soundOn ? 'is-on' : ''}><Volume2/></button><a href="/atlas" aria-label="打开月下舆图"><Compass/></a></div>
+        </header>
+
+        <section className="journey-scene scene-prologue">
+          <div className="scene-stars"/><FloatingClouds/>
+          <div className="giant-moon" data-depth="far"><i/><i/><i/></div>
+          <AssetPlaceholder name="月宫仙鹤" assetKey="character.crane-flying" className="crane-placeholder" color="#c8c1ad"/>
+          <div className="silhouette-mountains" data-depth="middle"><i/><i/><i/></div>
+          <SceneHeading number="序" eyebrow="三秋恰半" title="穿云见月" text="中秋之名，取秋季正中之意。从祭月、赏月到家人团聚，一轮圆月承载了千年的心意。"/>
+          <button className="scroll-cue" onClick={() => scrollToScene(1)}><span>循月光前行</span><ArrowDown/></button>
+        </section>
+
+        <section className="journey-scene scene-palace">
+          <div className="palace-moon" data-depth="far"/>
+          <FloatingClouds pale/>
+          <AssetPlaceholder name="桂花神树" assetKey="moon-palace.osmanthus-tree" className="palace-tree" color="#667257"/>
+          <AssetPlaceholder name="月宫主殿" assetKey="moon-palace.main-hall" className="palace-main" color="#476487"/>
+          <AssetPlaceholder name="月宫侧殿" assetKey="moon-palace.side-hall" className="palace-side" color="#5f7894"/>
+          <AssetPlaceholder name="嫦娥立姿" assetKey="moon-palace.change-standing" className="change-figure" color="#d4c7a8"/>
+          <AssetPlaceholder name="玉兔捣药" assetKey="moon-palace.jade-rabbit-pounding" className="rabbit-figure" color="#dad7c7"/>
+          <div className="paper-railing" data-depth="near"><i/><i/><i/><i/><i/></div>
+          <SceneHeading number="壹" eyebrow="神话与想象" title="月宫清辉" text="嫦娥、玉兔、吴刚与蟾宫，是古人寄给月亮的四种想象。"/>
+          <Hotspot label="嫦娥奔月" className="hotspot-change" onClick={() => setInfo({ kicker: '神话传说 · 非历史事实', title: '奔月 · 清辉长守', text: '相传嫦娥服下不死药，身轻如燕，飞向月宫。故事版本众多，却共同寄托着古人对月亮、永恒与离合的想象。', quote: '嫦娥应悔偷灵药，碧海青天夜夜心。' })}/>
+          <Hotspot label="玉兔捣药" className="hotspot-rabbit" onClick={() => setInfo({ kicker: '月宫意象', title: '捣药 · 仁心济世', text: '月中白兔持杵捣药，是汉代以来常见的月宫意象。它让清冷月宫多了一份亲切与生机。', quote: '白兔捣药秋复春，嫦娥孤栖与谁邻。' })}/>
+          <Hotspot label="吴刚伐桂" className="hotspot-tree" onClick={() => setInfo({ kicker: '神话传说 · 非历史事实', title: '伐桂 · 生生不息', text: '吴刚受罚砍伐月中桂树，树创随合，永无止境。后人从中读出坚持、磨炼与生命不息。' })}/>
+        </section>
+
+        <section className="journey-scene scene-landscape">
+          <div className="landscape-moon" data-depth="far"/>
+          <AssetPlaceholder name="远山组" assetKey="landscape.mountains-far" className="mountain-layer mountain-far" color="#91a5a0"/>
+          <AssetPlaceholder name="中山组" assetKey="landscape.mountains-middle" className="mountain-layer mountain-mid" color="#617d76"/>
+          <AssetPlaceholder name="近山组" assetKey="landscape.mountains-near" className="mountain-layer mountain-near" color="#344f50"/>
+          <AssetPlaceholder name="山间亭台" assetKey="landscape.hexagonal-pavilion" className="pavilion-placeholder" color="#5f7181"/>
+          <AssetPlaceholder name="临水石桥" assetKey="landscape.stone-bridge" className="bridge-placeholder" color="#8c938d"/>
+          <div className="css-river" data-depth="middle"><i/><i/><i/></div>
+          <div className="foreground-reeds" data-depth="near">{Array.from({ length: 12 }, (_, i) => <i key={i}/>)}</div>
+          <SceneHeading number="贰" eyebrow="月照古今" title="山水诗境" text="古人将无法抵达的故乡、无法相见的人，都交给月亮代为照看。"/>
+          <div className="poem-scroll">
+            <span>{poemData[poem].note}</span><blockquote>{poemData[poem].line}</blockquote><p>{poemData[poem].author}</p>
+            <div>{poemData.map((item, index) => <button key={item.line} className={index === poem ? 'active' : ''} onClick={() => setPoem(index)} aria-label={'查看诗句 ' + (index + 1)}>{index + 1}</button>)}</div>
+          </div>
+          <Hotspot label="水中月影" className="hotspot-river" onClick={() => setInfo({ kicker: '月下诗意', title: '为什么诗人总在望月？', text: '月亮同时照见相隔千里的人，因此成为思乡、怀人和团圆最稳定的共同意象。望月，是在确认远方的人也拥有同一片清辉。' })}/>
+        </section>
+
+        <section className="journey-scene scene-market">
+          <div className="market-sky" data-depth="far"/>
+          <AssetPlaceholder name="城楼剪影" assetKey="lantern-market.city-tower" className="city-tower" color="#344d68"/>
+          <AssetPlaceholder name="古城街屋组" assetKey="lantern-market.street-buildings" className="street-buildings" color="#4d6172"/>
+          <AssetPlaceholder name="月饼铺" assetKey="lantern-market.mooncake-shop" className="shop-placeholder shop-mooncake" color="#77604d"/>
+          <AssetPlaceholder name="桂花酒摊" assetKey="lantern-market.osmanthus-wine-stall" className="shop-placeholder shop-wine" color="#67594b"/>
+          <AssetPlaceholder name="舞火龙" assetKey="lantern-market.fire-dragon" className="fire-dragon" color="#ae5339"/>
+          <div className="lantern-lines" data-depth="near">{Array.from({ length: 9 }, (_, i) => <button key={i} onClick={() => i === 4 && setInfo({ kicker: '岭南风俗', title: '舞火龙', text: '草扎巨龙遍插线香，在鼓点和火光中穿街而过。人们借此祈求平安、丰收与风调雨顺。' })}><i/><span>{i === 4 ? '舞火龙' : ''}</span></button>)}</div>
+          <SceneHeading number="叁" eyebrow="风俗人间" title="古城灯市" text="祭月、走月、舞火龙、饮桂花酒。不同水土，用不同方式分享同一夜月光。"/>
+          <Hotspot label="燃灯赏灯" className="hotspot-lantern" onClick={() => setInfo({ kicker: '湖广 · 岭南', title: '灯火照人间', text: '中秋燃灯有祈福、助月色的意味。竹条扎灯，悬于高处，点点灯火与天上明月相映。' })}/>
+          <Hotspot label="桂花酒" className="hotspot-wine" onClick={() => setInfo({ kicker: '江南风物', title: '桂子飘香', text: '桂花盛放正值中秋。清甜香气被酿入酒中，寄托富贵、长久与团圆的愿望。' })}/>
+        </section>
+
+        <section className="journey-scene scene-flavors">
+          <div className="paper-table" data-depth="far"/>
+          <div className="food-orbit">{foodData.map((item, index) => <button key={item.name} className={'food-piece food-piece-' + index + (index === food ? ' active' : '')} onClick={() => setFood(index)}><i/><span>{item.name}<small>月饼</small></span></button>)}</div>
+          <AssetPlaceholder name="茶具组" assetKey="reunion.tea-set" className="tea-placeholder" color="#8aa09d"/>
+          <AssetPlaceholder name="桂花酒坛" assetKey="reunion.osmanthus-wine-jar" className="wine-jar-placeholder" color="#8a6048"/>
+          <AssetPlaceholder name="柚子与果肉" assetKey="food.pomelo" className="pomelo-placeholder" color="#9ba168"/>
+          <SceneHeading number="肆" eyebrow="四方风味" title="一口团圆" text="从岭南到江南，从北方到高原，不同风土，被包进一枚圆饼。"/>
+          <div className="food-caption"><span>{foodData[food].name}月饼 · {foodData[food].note}</span><p>{foodData[food].text}</p><small>点击月饼切换流派</small></div>
+        </section>
+
+        <section className="journey-scene scene-reunion">
+          <div className="reunion-night" data-depth="far"/>
+          <div className="window-frame" data-depth="near"><i/><i/><i/><i/></div>
+          <AssetPlaceholder name="赏月庭院" assetKey="reunion.moon-viewing-courtyard" className="courtyard-placeholder" color="#5e6c69"/>
+          <AssetPlaceholder name="团圆家宴人物组" assetKey="reunion.family-dinner-group" className="family-placeholder" color="#8a614b"/>
+          <div className="warm-lamp"><i/></div>
+          <SceneHeading number="伍" eyebrow="万家灯火" title="人间团圆" text="中秋的意义，从来不只在天上的月亮。它也在一张圆桌、一盏灯、一封未寄出的问候里。"/>
+          <Hotspot label="同席" className="hotspot-family" onClick={() => setInfo({ kicker: '人间中秋', title: '月圆是天象，团圆是人心', text: '围坐、分食、举杯，这些普通的动作让节日真正落在人间。团圆不只是相聚，也包括对未归之人的惦念。' })}/>
+          <Hotspot label="遥祝" className="hotspot-empty-seat" onClick={() => setInfo({ kicker: '共此时', title: '相隔千里，也可共享月光', text: '当无法归家时，人们借月亮确认彼此仍处于同一片夜色。中秋因此既关乎相聚，也容纳离别与思念。' })}/>
+        </section>
+
+        <section className="journey-scene scene-finale">
+          <div className="finale-moon" data-depth="far"/>
+          <div className="finale-city" data-depth="middle">{Array.from({ length: 28 }, (_, i) => <i key={i} style={{ '--h': (25 + (i * 17) % 65) + 'px', '--d': ((i % 8) * .12) + 's' } as CSSProperties}/>)}</div>
+          <AssetPlaceholder name="月宫仙鹤" assetKey="character.crane-flying" className="finale-crane" color="#d3cbb5"/>
+          <div className="golden-path" data-depth="near"><svg viewBox="0 0 1000 260" preserveAspectRatio="none"><path d="M-20,210 C150,30 290,280 450,120 S760,20 1040,90"/></svg></div>
+          <div className="finale-copy"><span>终 · 天涯此时</span><h2>海上生明月<br/><em>天涯共此时</em></h2><p>愿所有相隔千里的思念，<br/>都能在今夜，被同一轮月光照见。</p><div><button onClick={() => scrollToScene(0)}>再游一遍</button><a href="/atlas">展开月下舆图</a></div></div>
+        </section>
+
+        <nav className="scene-rail" aria-label="长卷场景导航">
+          <span>{sceneMeta[activeScene].index}</span>
+          <div>{sceneMeta.map((scene, index) => <button key={scene.key} className={index === activeScene ? 'active' : ''} onClick={() => scrollToScene(index)}><i/><b>{scene.title}</b></button>)}</div>
+          <small>{String(activeScene + 1).padStart(2, '0')} / {String(sceneMeta.length).padStart(2, '0')}</small>
+        </nav>
+      </div>
+    </div>
+
+    {info && <div className="info-mask" onClick={() => setInfo(null)}><aside className="info-sheet" onClick={event => event.stopPropagation()}><button onClick={() => setInfo(null)} aria-label="关闭"><X/></button><span>{info.kicker}</span><h2>{info.title}</h2><p>{info.text}</p>{info.quote && <blockquote>{info.quote}</blockquote>}<small>点击画面空白处返回长卷</small></aside></div>}
+  </main>
+}
+
+export function AtlasPage() {
+  return <main className="atlas-page">
+    <header><a href="/"><ArrowLeft/>返回月门</a><div><span>月满人间</span><small>月下舆图</small></div><a href="/journey">进入长卷<ArrowRight/></a></header>
+    <div className="atlas-stars"/>
+    <section className="atlas-copy"><span>MAP OF THE MOONLIT JOURNEY</span><h1>月下舆图</h1><p>这里没有必须完成的章节。选择一处地标，<br/>从你感兴趣的地方进入长卷。</p></section>
+    <div className="atlas-map">
+      <svg className="atlas-path" viewBox="0 0 1200 500" preserveAspectRatio="none"><path d="M30,320 C170,90 300,90 400,270 S620,450 720,220 S930,55 1160,245"/><path className="atlas-path-glow" d="M30,320 C170,90 300,90 400,270 S620,450 720,220 S930,55 1160,245"/></svg>
+      {sceneMeta.slice(1, 6).map((scene, index) => <a key={scene.key} href={'/journey?scene=' + scene.key} className={'atlas-node atlas-node-' + index}><i><span>{scene.index}</span></i><b>{scene.title}</b><small>{scene.subtitle}</small></a>)}
+      <a href="/journey?scene=finale" className="atlas-node atlas-node-5"><i><Moon fill="currentColor"/></i><b>万家共月</b><small>天涯此时</small></a>
+    </div>
+    <div className="atlas-legend"><Compass/><span>拖动长卷时，右上角月纹可随时返回此处</span></div>
+  </main>
+}
+
