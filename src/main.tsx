@@ -1,6 +1,11 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
+import AssetManager from './admin/AssetManager'
 import './styles.css'
+import './admin/admin.css'
 
-createRoot(document.getElementById('root')!).render(<StrictMode><App /></StrictMode>)
+const path = window.location.pathname.replace(/\/+$/, '') || '/'
+const page = path === '/admin/assets' ? <AssetManager /> : <App />
+
+createRoot(document.getElementById('root')!).render(<StrictMode>{page}</StrictMode>)

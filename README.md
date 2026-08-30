@@ -25,3 +25,15 @@ npm run dev
 ```bash
 npm run build
 ```
+## 素材管理
+
+启动开发服务器后访问：
+
+- http://localhost:5173/admin/assets
+
+当前管理页使用前端演示数据，已按照正式 MinIO API 结构设计。真实上传必须由服务端创建预签名 URL，禁止在前端配置 MinIO 密钥。
+
+详细规划：
+
+- [沉浸式主站与素材平台总体规划](docs/immersive-site-and-asset-platform-plan.md)
+- [美术资源清单与风格规范](docs/art-assets-and-style.md)
