@@ -1,14 +1,39 @@
-import { CSSProperties, useLayoutEffect, useRef, useState } from 'react'
+import { CSSProperties, createContext, memo, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import craneArtwork from '../../iamge/核心角色/月宫仙鹤.png'
 import marketPeopleArtwork from '../../iamge/核心角色/灯市人物组.png'
 import {
-  ArrowDown, ArrowLeft, ArrowRight, BookOpen, ChevronRight, Compass,
-  Map, Moon, Music2, Sparkles, Volume2, X,
+  ArrowDown, ArrowLeft, ArrowRight, Compass,
+  Map, Moon, Pause, Play, X,
 } from 'lucide-react'
 
+import treeArt from '../../iamge/月宫场景/桂花神树.png'
+import changeArt from '../../iamge/核心角色/嫦娥飞升姿.png'
+import palaceArt from '../../iamge/月宫场景/月宫主殿.png'
+import rabbitArt from '../../iamge/核心角色/玉兔捣药.png'
+import mountainsArt from '../../iamge/山水空间/远山组.png'
+import pavilionArt from '../../iamge/山水空间/山间亭台.png'
+import courtyardArt from '../../iamge/人间团圆/赏月庭院.png'
+import familyArt from '../../iamge/人间团圆/团圆家宴人物组.png'
+import cakeArt from '../../iamge/食物展示/广式月饼.png'
+import suCakeArt from '../../iamge/食物展示/苏式月饼.png'
+import dianCakeArt from '../../iamge/食物展示/滇式月饼.png'
+import jingCakeArt from '../../iamge/食物展示/京式月饼.png'
+
 gsap.registerPlugin(ScrollTrigger)
+const SceneContext = createContext<number | null>(null)
+const artSources: Record<string, { src: string; scene: number }> = {
+  'moon-palace.osmanthus-tree': { src: treeArt, scene: 1 },
+  'moon-palace.change-standing': { src: changeArt, scene: 1 },
+  'moon-palace.main-hall': { src: palaceArt, scene: 1 },
+  'moon-palace.jade-rabbit-pounding': { src: rabbitArt, scene: 1 },
+  'landscape.mountains-far': { src: mountainsArt, scene: 2 },
+  'landscape.hexagonal-pavilion': { src: pavilionArt, scene: 2 },
+  'reunion.moon-viewing-courtyard': { src: courtyardArt, scene: 5 },
+  'reunion.family-dinner-group': { src: familyArt, scene: 5 },
+}
+const cakeSources = [cakeArt, suCakeArt, dianCakeArt, jingCakeArt]
 
 const sceneMeta = [
   { key: 'prologue', index: '序', title: '穿云见月', subtitle: '三秋恰半' },
@@ -36,18 +61,54 @@ const foodData = [
 type InfoContent = { kicker: string; title: string; text: string; quote?: string }
 
 function AssetPlaceholder({ name, assetKey, className = '', color = '#55708d' }: { name: string; assetKey: string; className?: string; color?: string }) {
+  const source = artSources[assetKey]
+  if (source) return <ArtImage src={source.src} alt={name} assetKey={assetKey} className={'scene-art ' + className} scene={source.scene}/>
   return <div className={'art-placeholder ' + className} data-asset-key={assetKey} style={{ '--asset-color': color } as CSSProperties}>
     <i className="art-shadow"/><i className="art-paper"/><i className="art-cut"/>
     <span>{name}</span><small>{assetKey}</small>
   </div>
 }
 
-function ArtImage({ src, alt, assetKey, className = '' }: { src: string; alt: string; assetKey: string; className?: string }) {
+function ArtImage({ src, alt, assetKey, className = '', scene = 0 }: { src: string; alt: string; assetKey: string; className?: string; scene?: number }) {
+  const active = useContext(SceneContext)
+  const [readyToLoad, setReadyToLoad] = useState(active === null || Math.abs(active - scene) <= 1)
+  const [failed, setFailed] = useState(false)
+  useEffect(() => setFailed(false), [src])
+  useEffect(() => {
+    if (active === null || Math.abs(active - scene) <= 1) setReadyToLoad(true)
+  }, [active, scene])
   return <figure className={'art-image ' + className} data-asset-key={assetKey}>
-    <img src={src} alt={alt}/>
+    {readyToLoad && !failed && <img src={src} alt={alt} decoding="async" onError={() => setFailed(true)}/>}
+    {failed && <span className="art-fallback">{alt} · 暂未载入</span>}
   </figure>
 }
 
+function InfoDialog({ content, onClose }: { content: InfoContent; onClose: () => void }) {
+  const ref = useRef<HTMLDialogElement>(null)
+  useEffect(() => {
+    const dialog = ref.current!
+    const previous = document.activeElement as HTMLElement | null
+    const overflow = document.body.style.overflow
+    dialog.showModal()
+    document.body.style.overflow = 'hidden'
+    return () => {
+      dialog.close()
+      document.body.style.overflow = overflow
+      previous?.focus({ preventScroll: true })
+    }
+  }, [])
+  return <dialog ref={ref} className="culture-dialog" aria-labelledby="culture-title" onCancel={event => { event.preventDefault(); onClose() }} onClick={event => { if (event.target === event.currentTarget) onClose() }}>
+    <article className="culture-card">
+      <button className="culture-close" onClick={onClose} aria-label="关闭文化说明" autoFocus><X/></button>
+      <span className="culture-kicker">{content.kicker}</span>
+      <h2 id="culture-title">{content.title}</h2>
+      <div className="culture-rule" aria-hidden="true">✦</div>
+      <p>{content.text}</p>
+      {content.quote && <blockquote>{content.quote}</blockquote>}
+      <footer>月满人间 · 中秋文化志</footer>
+    </article>
+  </dialog>
+}
 function FloatingClouds({ pale = false }: { pale?: boolean }) {
   return <div className={'css-clouds' + (pale ? ' css-clouds--pale' : '')} aria-hidden="true">
     <i/><i/><i/><i/><i/>
@@ -65,7 +126,7 @@ function createSeededRandom(seed: number) {
   }
 }
 
-function StarField({ count = 84, seed = 815, className = '' }: { count?: number; seed?: number; className?: string }) {
+const StarField = memo(function StarField({ count = 84, seed = 815, className = '' }: { count?: number; seed?: number; className?: string }) {
   const random = createSeededRandom(seed)
   const stars = Array.from({ length: count }, (_, index) => {
     const brightness = random()
@@ -92,7 +153,7 @@ function StarField({ count = 84, seed = 815, className = '' }: { count?: number;
       '--star-delay': star.delay + 's',
     } as CSSProperties}/>)}
   </div>
-}
+})
 
 function SceneHeading({ number, eyebrow, title, text, align = 'left' }: { number: string; eyebrow: string; title: string; text: string; align?: 'left' | 'right' }) {
   return <div className={'scene-heading scene-heading--' + align}>
@@ -106,6 +167,7 @@ function Hotspot({ label, className = '', onClick }: { label: string; className?
 
 export function LandingPage() {
   const handlePointer = (event: React.PointerEvent<HTMLElement>) => {
+    if (event.pointerType !== 'mouse' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const rect = event.currentTarget.getBoundingClientRect()
     const x = ((event.clientX - rect.left) / rect.width - .5) * 2
     const y = ((event.clientY - rect.top) / rect.height - .5) * 2
@@ -137,7 +199,7 @@ export function LandingPage() {
       <a className="enter-button" href="/journey"><span>入画</span><ArrowRight/></a>
       <a className="atlas-button" href="/atlas"><Map/><span>展开舆图</span></a>
     </div>
-    <div className="portal-note"><span>SCROLL-DRIVEN PAPER WORLD</span><i/></div>
+    <div className="portal-note"><span>一轮月 · 万千人间</span><i/></div>
   </main>
 }
 
@@ -148,62 +210,90 @@ export function JourneyPage() {
   const [info, setInfo] = useState<InfoContent | null>(null)
   const [poem, setPoem] = useState(0)
   const [food, setFood] = useState(0)
-  const [soundOn, setSoundOn] = useState(false)
+  const [calm, setCalm] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  const currentIndex = useRef(-1)
+  const timelineRef = useRef<gsap.core.Timeline | null>(null)
+
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const update = () => setCalm(media.matches)
+    media.addEventListener('change', update)
+    return () => media.removeEventListener('change', update)
+  }, [])
 
   const scrollToScene = (index: number) => {
     const shell = shellRef.current
     if (!shell) return
     const range = shell.offsetHeight - window.innerHeight
-    window.scrollTo({ top: shell.offsetTop + range * (index / (sceneMeta.length - 1)), behavior: 'smooth' })
+    window.scrollTo({ top: shell.offsetTop + range * (index / (sceneMeta.length - 1)), behavior: calm ? 'instant' : 'smooth' })
   }
 
   useLayoutEffect(() => {
     const shell = shellRef.current
     const stage = stageRef.current
     if (!shell || !stage) return
-
     const context = gsap.context(() => {
-      const scenes = gsap.utils.toArray<HTMLElement>('.journey-scene', stage)
-      gsap.set(scenes, { autoAlpha: 0, scale: .96 })
-      gsap.set(scenes[0], { autoAlpha: 1, scale: 1 })
-
+      const scenes = Array.from(stage.querySelectorAll<HTMLElement>('.journey-scene'))
+      const activate = (index: number) => {
+        if (currentIndex.current === index) return
+        currentIndex.current = index
+        scenes.forEach((scene, i) => {
+          scene.inert = i !== index
+          scene.setAttribute('aria-hidden', String(i !== index))
+          scene.dataset.active = String(i === index)
+        })
+        setActiveScene(index)
+      }
+      currentIndex.current = -1
+      gsap.set(scenes, { autoAlpha: 0 })
+      gsap.set(scenes[0], { autoAlpha: 1 })
+      activate(0)
       const timeline = gsap.timeline({
         defaults: { ease: 'none' },
+        onUpdate() {
+          activate(Math.min(6, Math.floor(this.time() + .19)))
+          stage.style.setProperty('--journey-progress', String(this.progress()))
+        },
         scrollTrigger: {
-          trigger: shell,
-          start: 'top top',
-          end: 'bottom bottom',
-          scrub: 1.05,
-          invalidateOnRefresh: true,
-          onUpdate: self => setActiveScene(Math.min(scenes.length - 1, Math.floor(self.progress * scenes.length))),
+          trigger: shell, start: 'top top', end: 'bottom bottom',
+          scrub: calm ? true : .32, invalidateOnRefresh: true,
         },
       })
-
-      scenes.forEach((scene, index) => {
-        const at = index
-        if (index > 0) {
-          timeline.to(scenes[index - 1], { autoAlpha: 0, scale: 1.055, duration: .42 }, at - .42)
-          timeline.fromTo(scene, { autoAlpha: 0, scale: .93 }, { autoAlpha: 1, scale: 1, duration: .48 }, at - .44)
+      timelineRef.current = timeline
+      scenes.forEach((scene, i) => {
+        if (i > 0) {
+          timeline.to(scenes[i - 1], { autoAlpha: 0, duration: .38 }, i - .38)
+          timeline.to(scene, { autoAlpha: 1, duration: .38 }, i - .38)
         }
-        timeline.fromTo(scene.querySelectorAll('[data-depth="far"]'), { xPercent: -3 }, { xPercent: 3, duration: 1 }, at)
-        timeline.fromTo(scene.querySelectorAll('[data-depth="middle"]'), { xPercent: -6 }, { xPercent: 7, duration: 1 }, at)
-        timeline.fromTo(scene.querySelectorAll('[data-depth="near"]'), { xPercent: -11 }, { xPercent: 13, duration: 1 }, at)
+        if (!calm && i < scenes.length - 1) {
+          for (const [depth, distance] of [['far', 1], ['middle', 2], ['near', 3]] as const) {
+            const layers = scene.querySelectorAll('[data-depth="' + depth + '"]')
+            if (layers.length) timeline.fromTo(layers, { xPercent: -distance }, { xPercent: distance, duration: .62 }, i)
+          }
+        }
       })
-
-      const requested = new URLSearchParams(window.location.search).get('scene')
-      const targetIndex = sceneMeta.findIndex(item => item.key === requested)
-      if (targetIndex > 0) requestAnimationFrame(() => scrollToScene(targetIndex))
+      ScrollTrigger.refresh()
     }, stage)
+    return () => { timelineRef.current = null; context.revert() }
+  }, [calm])
 
-    return () => context.revert()
+  useEffect(() => {
+    const target = sceneMeta.findIndex(item => item.key === new URLSearchParams(window.location.search).get('scene'))
+    if (target <= 0) return
+    const frame = requestAnimationFrame(() => {
+      const shell = shellRef.current!
+      window.scrollTo({ top: shell.offsetTop + (shell.offsetHeight - window.innerHeight) * target / 6, behavior: 'instant' })
+      ScrollTrigger.update()
+      timelineRef.current?.progress(target / 6)
+    })
+    return () => cancelAnimationFrame(frame)
   }, [])
-
-  return <main className="journey-page">
+  return <SceneContext.Provider value={activeScene}><main className={"journey-page" + (calm ? " is-calm" : "")}>
     <div className="journey-shell" ref={shellRef}>
       <div className="journey-stage" ref={stageRef}>
         <header className="journey-header">
           <a href="/" className="journey-brand"><Moon fill="currentColor"/><span>月满人间<small>动态纸雕长卷</small></span></a>
-          <div><button onClick={() => setSoundOn(!soundOn)} aria-label={soundOn ? '关闭声音' : '开启声音'} className={soundOn ? 'is-on' : ''}><Volume2/></button><a href="/atlas" aria-label="打开月下舆图"><Compass/></a></div>
+          <div><button className="motion-toggle" onClick={() => setCalm(value => !value)} aria-pressed={calm} aria-label={calm ? '开启动效' : '静观：减少动效'}>{calm ? <Play/> : <Pause/>}<span>{calm ? '开启动效' : '静观'}</span></button><a href="/atlas" aria-label="打开月下舆图"><Compass/></a></div>
         </header>
 
         <section className="journey-scene scene-prologue">
@@ -240,9 +330,9 @@ export function JourneyPage() {
           <div className="css-river" data-depth="middle"><i/><i/><i/></div>
           <div className="foreground-reeds" data-depth="near">{Array.from({ length: 12 }, (_, i) => <i key={i}/>)}</div>
           <SceneHeading number="贰" eyebrow="月照古今" title="山水诗境" text="古人将无法抵达的故乡、无法相见的人，都交给月亮代为照看。"/>
-          <div className="poem-scroll">
-            <span>{poemData[poem].note}</span><blockquote>{poemData[poem].line}</blockquote><p>{poemData[poem].author}</p>
-            <div>{poemData.map((item, index) => <button key={item.line} className={index === poem ? 'active' : ''} onClick={() => setPoem(index)} aria-label={'查看诗句 ' + (index + 1)}>{index + 1}</button>)}</div>
+          <div className="poem-scroll" aria-live="polite">
+            <span>{poemData[poem].note}</span><blockquote key={poem}>{poemData[poem].line.split('，').map((line, i) => <span key={i} className="poem-verse">{line}{i === 0 ? '，' : ''}</span>)}</blockquote><p>{poemData[poem].author}</p>
+            <div>{poemData.map((item, index) => <button key={item.line} className={index === poem ? 'active' : ''} aria-pressed={index === poem} onClick={() => setPoem(index)} aria-label={'查看诗句 ' + (index + 1)}>{index + 1}</button>)}</div>
           </div>
           <Hotspot label="水中月影" className="hotspot-river" onClick={() => setInfo({ kicker: '月下诗意', title: '为什么诗人总在望月？', text: '月亮同时照见相隔千里的人，因此成为思乡、怀人和团圆最稳定的共同意象。望月，是在确认远方的人也拥有同一片清辉。' })}/>
         </section>
@@ -251,11 +341,11 @@ export function JourneyPage() {
           <div className="market-sky" data-depth="far"/>
           <AssetPlaceholder name="城楼剪影" assetKey="lantern-market.city-tower" className="city-tower" color="#344d68"/>
           <AssetPlaceholder name="古城街屋组" assetKey="lantern-market.street-buildings" className="street-buildings" color="#4d6172"/>
-          <ArtImage src={marketPeopleArtwork} alt="提灯游赏的中秋灯市人物纸雕组" assetKey="lantern-market.people-group" className="market-people-artwork"/>
+          <ArtImage src={marketPeopleArtwork} alt="提灯游赏的中秋灯市人物纸雕组" assetKey="lantern-market.people-group" className="market-people-artwork" scene={3}/>
           <AssetPlaceholder name="月饼铺" assetKey="lantern-market.mooncake-shop" className="shop-placeholder shop-mooncake" color="#77604d"/>
           <AssetPlaceholder name="桂花酒摊" assetKey="lantern-market.osmanthus-wine-stall" className="shop-placeholder shop-wine" color="#67594b"/>
           <AssetPlaceholder name="舞火龙" assetKey="lantern-market.fire-dragon" className="fire-dragon" color="#ae5339"/>
-          <div className="lantern-lines" data-depth="near">{Array.from({ length: 9 }, (_, i) => <button key={i} onClick={() => i === 4 && setInfo({ kicker: '岭南风俗', title: '舞火龙', text: '草扎巨龙遍插线香，在鼓点和火光中穿街而过。人们借此祈求平安、丰收与风调雨顺。' })}><i/><span>{i === 4 ? '舞火龙' : ''}</span></button>)}</div>
+          <div className="lantern-lines" data-depth="near">{Array.from({ length: 9 }, (_, i) => <button key={i} aria-label={i === 4 ? '了解舞火龙' : '了解中秋灯俗'} onClick={() => setInfo(i === 4 ? { kicker: '岭南风俗', title: '舞火龙', text: '草扎巨龙遍插线香，在鼓点和火光中穿街而过。人们借此祈求平安、丰收与风调雨顺。' } : { kicker: '中秋灯俗', title: '一盏灯，一份祈愿', text: '中秋夜，人们扎灯、提灯、悬灯，把对团圆与平安的期盼寄托在灯火中。不同地方的灯样各异，共同点亮了人间月夜。' })}><i/><span>{i === 4 ? '舞火龙' : ''}</span></button>)}</div>
           <SceneHeading number="叁" eyebrow="风俗人间" title="古城灯市" text="祭月、走月、舞火龙、饮桂花酒。不同水土，用不同方式分享同一夜月光。"/>
           <Hotspot label="燃灯赏灯" className="hotspot-lantern" onClick={() => setInfo({ kicker: '湖广 · 岭南', title: '灯火照人间', text: '中秋燃灯有祈福、助月色的意味。竹条扎灯，悬于高处，点点灯火与天上明月相映。' })}/>
           <Hotspot label="桂花酒" className="hotspot-wine" onClick={() => setInfo({ kicker: '江南风物', title: '桂子飘香', text: '桂花盛放正值中秋。清甜香气被酿入酒中，寄托富贵、长久与团圆的愿望。' })}/>
@@ -263,12 +353,12 @@ export function JourneyPage() {
 
         <section className="journey-scene scene-flavors">
           <div className="paper-table" data-depth="far"/>
-          <div className="food-orbit">{foodData.map((item, index) => <button key={item.name} className={'food-piece food-piece-' + index + (index === food ? ' active' : '')} onClick={() => setFood(index)}><i/><span>{item.name}<small>月饼</small></span></button>)}</div>
+          <div className="food-orbit">{foodData.map((item, index) => <button key={item.name} className={'food-piece food-piece-' + index + (index === food ? ' active' : '')} aria-label={item.name + '月饼'} aria-pressed={index === food} onClick={() => setFood(index)}><i/><span>{item.name}<small>月饼</small></span></button>)}</div>
           <AssetPlaceholder name="茶具组" assetKey="reunion.tea-set" className="tea-placeholder" color="#8aa09d"/>
           <AssetPlaceholder name="桂花酒坛" assetKey="reunion.osmanthus-wine-jar" className="wine-jar-placeholder" color="#8a6048"/>
           <AssetPlaceholder name="柚子与果肉" assetKey="food.pomelo" className="pomelo-placeholder" color="#9ba168"/>
           <SceneHeading number="肆" eyebrow="四方风味" title="一口团圆" text="从岭南到江南，从北方到高原，不同风土，被包进一枚圆饼。"/>
-          <div className="food-caption"><span>{foodData[food].name}月饼 · {foodData[food].note}</span><p>{foodData[food].text}</p><small>点击月饼切换流派</small></div>
+          <ArtImage src={cakeSources[food]} alt={foodData[food].name + '月饼'} assetKey={'food.mooncake-' + food} className="cake-artwork" scene={4}/><div className="food-caption" aria-live="polite"><span>{foodData[food].name}月饼 · {foodData[food].note}</span><p>{foodData[food].text}</p><small>点击月饼切换流派</small></div>
         </section>
 
         <section className="journey-scene scene-reunion">
@@ -285,23 +375,22 @@ export function JourneyPage() {
         <section className="journey-scene scene-finale">
           <div className="finale-moon" data-depth="far"/>
           <div className="finale-city" data-depth="middle">{Array.from({ length: 28 }, (_, i) => <i key={i} style={{ '--h': (25 + (i * 17) % 65) + 'px', '--d': ((i % 8) * .12) + 's' } as CSSProperties}/>)}</div>
-          <ArtImage src={craneArtwork} alt="飞向万家灯火的丹顶仙鹤纸雕" assetKey="character.crane-flying" className="finale-crane-artwork"/>
+          <ArtImage src={craneArtwork} alt="飞向万家灯火的丹顶仙鹤纸雕" assetKey="character.crane-flying" className="finale-crane-artwork" scene={6}/>
           <div className="golden-path" data-depth="near"><svg viewBox="0 0 1000 260" preserveAspectRatio="none"><path d="M-20,210 C150,30 290,280 450,120 S760,20 1040,90"/></svg></div>
           <div className="finale-copy"><span>终 · 天涯此时</span><h2>海上生明月<br/><em>天涯共此时</em></h2><p>愿所有相隔千里的思念，<br/>都能在今夜，被同一轮月光照见。</p><div><button onClick={() => scrollToScene(0)}>再游一遍</button><a href="/atlas">展开月下舆图</a></div></div>
         </section>
 
         <nav className="scene-rail" aria-label="长卷场景导航">
           <span>{sceneMeta[activeScene].index}</span>
-          <div>{sceneMeta.map((scene, index) => <button key={scene.key} className={index === activeScene ? 'active' : ''} onClick={() => scrollToScene(index)}><i/><b>{scene.title}</b></button>)}</div>
+          <div>{sceneMeta.map((scene, index) => <button key={scene.key} className={index === activeScene ? 'active' : ''} aria-label={scene.title} aria-current={index === activeScene ? 'location' : undefined} onClick={() => scrollToScene(index)}><i/><b>{scene.title}</b></button>)}</div>
           <small>{String(activeScene + 1).padStart(2, '0')} / {String(sceneMeta.length).padStart(2, '0')}</small>
         </nav>
       </div>
     </div>
 
-    {info && <div className="info-mask" onClick={() => setInfo(null)}><aside className="info-sheet" onClick={event => event.stopPropagation()}><button onClick={() => setInfo(null)} aria-label="关闭"><X/></button><span>{info.kicker}</span><h2>{info.title}</h2><p>{info.text}</p>{info.quote && <blockquote>{info.quote}</blockquote>}<small>点击画面空白处返回长卷</small></aside></div>}
-  </main>
+    {info && <InfoDialog content={info} onClose={() => setInfo(null)}/>}
+  </main></SceneContext.Provider>
 }
-
 export function AtlasPage() {
   return <main className="atlas-page">
     <header><a href="/"><ArrowLeft/>返回月门</a><div><span>月满人间</span><small>月下舆图</small></div><a href="/journey">进入长卷<ArrowRight/></a></header>

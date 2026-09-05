@@ -1,0 +1,302 @@
+/* Composition and interaction polish. Scoped to the public experience. */
+.portal-page, .atlas-page { min-height: 100svh; }
+.portal-page { height: 100svh; min-height: 720px; }
+.portal-page::before, .atlas-page::before { z-index: 1; }
+.portal-page::after, .atlas-page::after, .journey-stage::after { opacity: .11; }
+.portal-copy { left: 9%; top: 23%; width: 38%; transform: none; text-align: left; }
+.portal-copy p { font-size: 11px; letter-spacing: .32em; color: #ba9b62; }
+.portal-copy h1 { margin: 28px 0 20px; font-size: clamp(72px, 7.4vw, 112px); line-height: 1.15; letter-spacing: .16em; }
+.portal-copy h1 br { display: none; }
+.portal-copy h1 em { display: block; padding-left: .8em; color: #d7bd87; }
+.portal-copy blockquote { margin: 24px 0 16px; font-family: inherit; font-size: 18px; letter-spacing: .16em; }
+.portal-copy > span { display: block; font-size: 12px; line-height: 2.2; color: #aaa896; }
+.moon-gate { left: 69%; top: 48%; width: min(49vw, 710px); }
+.moon-gate-ring { border-width: 10px; border-color: #947847; box-shadow: inset 0 0 0 2px #dac699, 0 0 90px #cdaa5320; }
+.moon-gate-ring::after { border-style: solid; opacity: .35; }
+.moon-gate-world { inset: 3%; background: radial-gradient(ellipse at 65% 25%,#586160,#253c40 48%,#0e1c21); }
+.portal-actions { left: 9%; bottom: 12%; transform: none; width: auto; gap: 16px; }
+.enter-button, .atlas-button { height: 52px; border-radius: 2px; }
+.enter-button { width: 152px; background: #d9bf88; border-color: #e6d2a6; color: #27251f; }
+.atlas-button { width: 150px; background: #121c1c99; }
+.portal-branch { opacity: .4; }
+.portal-note { top: auto; bottom: 5%; right: 6%; writing-mode: horizontal-tb; font-size: 10px; letter-spacing: .25em; }
+.portal-note i { height: 1px; width: 60px; }
+.scene-art { padding: 0; border: 0; clip-path: none !important; background: none; border-radius: 0; overflow: visible; box-shadow: none; animation: none; }
+.scene-art img { object-fit: contain; }
+.art-image { animation: none; filter: drop-shadow(0 18px 18px #0006); }
+.art-image img { height: auto; max-height: 100%; }
+.scene-art.portal-palace { left: 3%; bottom: 7%; width: 94%; height: 73%; z-index: 5; }
+.portal-palace img { height: 100%; }
+.portal-mountains { opacity: .48; height: 29%; }
+.portal-world-moon { width: 33%; top: 8%; right: 14%; box-shadow: 0 0 55px #ead8a440; }
+.journey-shell { height: 700svh; }
+.journey-stage { height: 100svh; min-height: 540px; }
+.journey-stage::before { content: ''; z-index: 85; top: auto; bottom: 0; height: 2px; background: #d4b878; transform: scaleX(var(--journey-progress,0)); transform-origin: left; pointer-events: none; }
+.journey-header { height: 84px; padding: 0 4vw; }
+.journey-brand { gap: 10px; font-size: 23px; }
+.journey-brand small { margin-top: 5px; font-size: 9px; }
+.journey-header > div { gap: 10px; align-items: center; }
+.journey-header > div a { width: 44px; height: 44px; }
+.journey-header > div button.motion-toggle { width: auto; height: 44px; padding: 0 16px; display: flex; gap: 8px; border-radius: 24px; }
+.motion-toggle svg { width: 14px; }
+.motion-toggle span { font-size: 11px; letter-spacing: .14em; }
+.motion-toggle[aria-pressed=true] { background: #d9bf88 !important; color: #211c15 !important; }
+.journey-scene { pointer-events: none; }
+.journey-scene[data-active=true] { pointer-events: auto; }
+.journey-scene:not([data-active=true]) *, .journey-scene:not([data-active=true]) *::before, .journey-scene:not([data-active=true]) *::after { animation-play-state: paused !important; }
+.scene-heading { left: 8%; top: 25%; width: min(29vw,400px); padding: 0; border: 0; text-align: left; }
+.scene-heading > span { font-size: 10px; letter-spacing: .28em; display: flex; align-items: center; gap: 14px; }
+.scene-heading > span::before { content: ''; width: 32px; border-top: 1px solid #b49758; }
+.scene-heading h2 { font-size: clamp(44px,5.1vw,78px); line-height: 1.25; letter-spacing: .07em; margin: 24px 0; font-weight: 400; text-shadow: 0 3px 20px #0004; }
+.scene-heading p { color: #c3c2b2; font-size: 13px; line-height: 2.3; letter-spacing: .07em; max-width: 28em; text-wrap: pretty; }
+.scene-prologue { background: radial-gradient(ellipse at 67% 44%,#3b4645,#14292f 43%,#091317 80%); }
+.giant-moon { left: 67%; top: 47%; width: min(43vw,65svh); box-shadow: 0 0 120px #e8c78020; background: radial-gradient(circle at 32% 26%,#f1e8d1,#d8c492); }
+.giant-moon i { opacity: .3; filter: blur(5px); }
+.crane-artwork { right: 10%; top: 21%; width: 40vw; max-height: 62%; transform: rotate(-8deg); animation: crane-glide 9s ease-in-out infinite; }
+@keyframes crane-glide { 50% { translate: 0 -10px; rotate: 1deg; } }
+.silhouette-mountains { height: 30%; bottom: -13%; opacity: .75; }
+.scroll-cue { bottom: 8%; flex-direction: row; gap: 14px; font-size: 10px; }
+.scroll-cue svg { width: 15px; }
+.scene-rail { right: 3%; width: 40px; gap: 18px; }
+.scene-rail > div { gap: 5px; }
+.scene-rail button { width: 36px; height: 36px; justify-content: center; }
+.scene-rail button b { right: 38px; font-size: 10px; background: #111d20e6; border-radius: 20px; padding: 0; }
+.scene-rail button.active b, .scene-rail button:hover b { padding: 6px 10px; max-width: 110px; }
+.scene-rail > small { font-size: 9px; white-space: nowrap; }
+.scene-hotspot { min-height: 44px; padding: 8px; gap: 10px; border-radius: 30px; transition: background .2s, translate .2s; }
+.scene-hotspot:hover { background: #d2b97c18; translate: 0 -3px; }
+.scene-hotspot i { width: 9px; height: 9px; flex-shrink: 0; }
+.scene-hotspot span { padding: 7px 12px; border-radius: 24px; border: 1px solid #d4bf8d40; background: #111b20cc; backdrop-filter: blur(8px); }
+.art-placeholder { opacity: .48; border: 0; box-shadow: none; background: linear-gradient(145deg,#405456,#182b30) !important; }
+.art-placeholder::before, .art-placeholder .art-paper, .art-placeholder .art-cut, .art-placeholder small { display: none; }
+.art-placeholder span { font-size: 10px; letter-spacing: .2em; opacity: .65; }
+.art-fallback { padding: 20px; color: #d8c494; font-size: 12px; }
+.scene-palace { background: radial-gradient(ellipse at 67% 48%,#465153,#243738 45%,#101d21); }
+.scene-art.palace-main { left: 36%; top: 19%; width: 57%; height: 71%; z-index: 8; }
+.palace-main img { height: 100%; }
+.scene-art.rabbit-figure { left: 38%; bottom: 5%; width: 16%; height: 28%; z-index: 14; }
+.palace-moon { left: 61%; top: 14%; width: 20vw; height: 20vw; opacity: .8; }
+.palace-tree { right: 2%; bottom: 8%; width: 19%; height: 55%; opacity: .22; }
+.palace-side { display: none; }
+.change-figure { left: 77%; bottom: 11%; height: 23%; width: 9%; opacity: .45; }
+.paper-railing { height: 9%; opacity: .4; z-index: 6; }
+.hotspot-change { left: 71%; top: 66%; }.hotspot-rabbit { left: 42%; bottom: 8%; }.hotspot-tree { right: 15%; top: 23%; }
+.scene-landscape { background: linear-gradient(#21383c,#536862 60%,#233c3b); }
+.scene-landscape .scene-heading { top: 15%; }
+.scene-art.mountain-far { left: 0; bottom: 4%; width: 100%; height: 78%; opacity: .85; z-index: 2; filter: none; }
+.mountain-far img { width: 100%; height: 100%; object-fit: cover; object-position: center bottom; }
+.mountain-mid { bottom: -9%; height: 40%; opacity: .25; }
+.mountain-near { bottom: -20%; height: 32%; opacity: .65; }
+.scene-art.pavilion-placeholder { left: 40%; bottom: 16%; width: 21%; height: 30%; z-index: 9; }
+.landscape-moon { width: 13vw; left: 42%; top: 9%; opacity: .65; }
+.css-river { width: 35%; left: 35%; opacity: .28; }
+.foreground-reeds { height: 10%; opacity: .5; }
+.bridge-placeholder { display: none; }
+.poem-scroll { right: 10%; top: 24%; width: 27%; min-height: 0; padding: 32px; transform: none; background: #ecdfbfed; border: 1px solid #f5eacb; box-shadow: 0 20px 70px #101d2140; }
+.poem-scroll::before,.poem-scroll::after { display: none; }
+.poem-scroll blockquote { font-family: inherit; font-size: clamp(21px,2vw,30px); line-height: 1.9; min-height: 110px; margin: 22px 0; }
+.poem-scroll button { min-height: 40px; border-color: #95805a44; }
+.hotspot-river { left: 45%; bottom: 12%; }
+.scene-market .scene-heading { top: 19%; }
+.market-people-artwork { left: 39%; bottom: 2%; width: 55%; max-height: 80%; }
+.market-people-artwork img { max-height: 77svh; }
+.fire-dragon { display: none; }
+.city-tower { opacity: .27; left: 54%; width: 30%; }
+.street-buildings { opacity: .25; bottom: 0; height: 37%; }
+.shop-placeholder { opacity: .18; bottom: 2%; }
+.lantern-lines { z-index: 15; }
+.lantern-lines::before,.lantern-lines::after { opacity: .3; }
+.lantern-lines button { transform-origin: center -30px; width: 18px; height: 28px; animation: lantern-sway 5s ease-in-out infinite; }
+.lantern-lines button:nth-child(2n) { animation-delay: -2s; }
+@keyframes lantern-sway { 50% { rotate: 7deg; } }
+.lantern-lines button:nth-child(n) { top: 13%; }
+.lantern-lines button:nth-child(2n) { top: 16%; }
+.lantern-lines button span { display: none; }
+.hotspot-lantern { left: 8%; bottom: 23%; }.hotspot-wine { left: 20%; right: auto; bottom: 23%; }
+.scene-flavors { background: radial-gradient(ellipse at 65% 45%,#e5d4ae,#c2ab83 65%,#8f7659); }
+.scene-flavors .scene-heading { top: 20%; }
+.scene-flavors .scene-heading h2 { color: #3e3c31; text-shadow: none; }
+.scene-flavors .scene-heading p { color: #534f40; }
+.scene-flavors .scene-heading > span { color: #835b36; }
+.paper-table { inset: 12% 9% 15% 38%; border-radius: 50%; box-shadow: inset 0 0 70px #88673b20; border-color: #93754940; }
+.cake-artwork { left: 46%; top: 22%; width: 35%; height: 48%; z-index: 12; filter: drop-shadow(0 20px 20px #65432140); }
+.cake-artwork img { height: 100%; }
+.food-orbit { z-index: 25; inset: auto auto 22% 8%; display: flex; gap: 8px; width: 30%; flex-wrap: wrap; }
+.food-piece, .food-piece:hover, .food-piece.active { position: relative; left: auto; top: auto; transform: none; margin: 0; width: 63px; height: 46px; border-radius: 3px; box-shadow: none; background: #e7d5b1; border-color: #97734066; }
+.food-piece::after,.food-piece > i,.food-piece small { display: none; }
+.food-piece.active { color: #fff1d4; background: #854634; }
+.food-caption { left: 65%; bottom: 12%; width: 43%; color: #494336; }
+.food-caption > span { margin: 0; color: #673f2b; font-size: 25px; }
+.food-caption p { font-size: 12px; line-height: 1.9; }
+.tea-placeholder,.wine-jar-placeholder,.pomelo-placeholder { display: none; }
+.scene-reunion .scene-heading { top: 19%; }
+.scene-art.courtyard-placeholder { left: 36%; bottom: 6%; width: 57%; height: 75%; z-index: 5; }
+.courtyard-placeholder img { height: 100%; }
+.scene-art.family-placeholder { left: 47%; bottom: 5%; width: 35%; height: 35%; z-index: 12; }
+.window-frame { inset: 7% 5%; border-width: 1px; border-color: #ad8d5426; z-index: 1; }
+.window-frame::before,.window-frame::after { display: none; }
+.warm-lamp { right: 14%; top: 16%; width: 26px; height: 42px; opacity: .7; }
+.hotspot-family { left: 8%; bottom: 23%; }.hotspot-empty-seat { left: 20%; right: auto; bottom: 23%; }
+.finale-moon { width: min(55vw,72svh); top: 45%; background: #e7d8b6; }
+.finale-copy { top: 43%; width: 80%; }
+.finale-copy h2 { color: #3e4036; text-shadow: none; font-size: clamp(40px,5.3vw,76px); line-height: 1.5; letter-spacing: .1em; }
+.finale-copy h2 em { color: #89543b; }
+.finale-copy > p { color: #645c48; font-size: 12px; }
+.finale-copy > span { color: #7e6946; }
+.finale-copy > div { margin-top: 22px; }
+.finale-copy button,.finale-copy a { min-height: 44px; border-color: #99805799; transition: background .2s; }
+.finale-copy button:hover,.finale-copy a:hover { background: #a9874f20; }
+.finale-crane-artwork { width: 24%; right: 5%; top: 12%; opacity: .8; }
+.finale-city { height: 18%; }
+.golden-path { height: 20%; opacity: .4; }
+.atlas-page { background: radial-gradient(ellipse at 50% 65%,#334644,#13272e 50%,#0a171c); }
+.atlas-page > header { padding: 28px 5%; }
+.atlas-copy { margin: 5vh auto 0; }
+.atlas-copy h1 { font-size: clamp(48px,5.5vw,76px); margin: 20px 0 16px; }
+.atlas-copy > span { font-size: 9px; letter-spacing: .35em; color: #b0a17d; }
+.atlas-map { width: 82%; height: 49svh; min-height: 320px; }
+.atlas-node { min-width: 88px; padding: 10px; }
+.atlas-node i { width: 66px; height: 66px; border-color: #b79c6555; background: #273a38; }
+.atlas-node b { margin-top: 15px; font-size: 21px; letter-spacing: .15em; }
+.atlas-node small { margin-top: 8px; font-size: 10px; }
+.atlas-path { opacity: .4; stroke-width: 1; }
+.atlas-legend { position: relative; left: auto; bottom: auto; margin: 12px auto 26px; width: fit-content; border: 0; font-size: 11px; }
+.culture-dialog { border: 0; padding: 0; width: 100%; height: 100%; max-width: none; max-height: none; background: transparent; color: #38372e; margin: 0; }
+.culture-dialog[open] { display: grid; place-items: center; }
+.culture-dialog::backdrop { background: #041013bd; backdrop-filter: blur(7px); }
+.culture-card { position: relative; width: min(560px,calc(100vw - 32px)); max-height: 85svh; overflow: auto; padding: 65px 52px 35px; background: #e9dec1; border: 1px solid #f4e8c9; box-shadow: 0 35px 120px #0005; animation: card-arrive .3s ease-out; }
+@keyframes card-arrive { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.culture-close { position: absolute; top: 14px; right: 14px; width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid #9a81543d; background: transparent; color: #675a41; cursor: pointer; border-radius: 50%; }
+.culture-kicker { color: #88683e; font-size: 11px; letter-spacing: .17em; }
+.culture-card h2 { margin: 20px 0; font-size: 32px; line-height: 1.6; font-weight: 500; text-wrap: balance; }
+.culture-rule { display: flex; align-items: center; gap: 14px; color: #ad925e; }
+.culture-rule::before,.culture-rule::after { content: ''; flex: 1; height: 1px; background: #ad925e40; }
+.culture-card p { font-size: 14px; line-height: 2.3; margin: 25px 0; }
+.culture-card blockquote { margin: 24px 0; padding: 20px; background: #d9c69d40; color: #7d513d; font-size: 17px; line-height: 1.9; border-left: 2px solid #987547; }
+.culture-card footer { font-size: 10px; color: #958469; letter-spacing: .2em; padding-top: 25px; }
+.is-calm *, .is-calm *::before, .is-calm *::after { animation-play-state: paused !important; }
+@media (max-width: 760px) {
+  .portal-page { height: 100svh; min-height: 700px; }
+  .portal-copy { left: 7%; top: 9%; width: 86%; text-align: center; }
+  .portal-copy p { font-size: 9px; letter-spacing: .22em; }
+  .portal-copy h1 { font-size: 62px; margin: 17px 0 10px; letter-spacing: .12em; }
+  .portal-copy h1 em { display: inline; padding: 0; }
+  .portal-copy blockquote { display: block; font-size: 12px; margin: 13px 0; }
+  .portal-copy > span { display: none; }
+  .moon-gate { left: 50%; top: 55%; width: min(83vw,47svh); }
+  .portal-actions { left: 50%; bottom: 9%; transform: translateX(-50%); gap: 10px; }
+  .enter-button,.atlas-button { width: 135px; height: 48px; }
+  .portal-note { display: flex; right: 50%; transform: translateX(50%); bottom: 3%; white-space: nowrap; font-size: 9px; }
+  .journey-stage { height: 100svh; min-height: 0; }
+  .journey-shell { height: 640svh; }
+  .journey-header { height: 65px; padding: 0 20px; }
+  .journey-brand { font-size: 19px; }
+  .journey-header > div button.motion-toggle { padding: 0 12px; height: 38px; }
+  .journey-header > div a { height: 38px; width: 38px; }
+  .scene-heading,.scene-landscape .scene-heading,.scene-market .scene-heading,.scene-flavors .scene-heading,.scene-reunion .scene-heading { left: 7%; right: auto; top: 14%; width: 86%; }
+  .scene-heading h2 { font-size: 41px; margin: 15px 0 12px; }
+  .scene-heading p { font-size: 12px; line-height: 1.95; max-width: 29em; }
+  .scene-heading > span { font-size: 9px; }
+  .giant-moon { left: 56%; top: 59%; width: min(75vw,43svh); }
+  .crane-artwork { right: 0; top: 40%; width: 88vw; max-height: 46%; }
+  .scroll-cue { bottom: 13%; }
+  .scene-rail { right: 4%; left: 4%; top: auto; bottom: max(12px,env(safe-area-inset-bottom)); transform: none; width: auto; border: 1px solid #bfa4733d; border-radius: 12px; padding: 4px; background: #0e1b20e6; backdrop-filter: blur(10px); }
+  .scene-rail > span,.scene-rail > small { display: none; }
+  .scene-rail > div { width: 100%; display: grid; grid-template-columns: repeat(7,1fr); gap: 0; }
+  .scene-rail button { width: 100%; height: 45px; flex-direction: column; gap: 7px; padding: 4px 0; }
+  .scene-rail button b,.scene-rail button.active b,.scene-rail button:hover b { position: static; display: block; max-width: none; padding: 0; font-size: 8px; background: none; font-weight: 400; }
+  .scene-rail button i { width: 4px; height: 4px; }
+  .scene-rail button.active i { width: 6px; height: 6px; }
+  .scene-art.palace-main { top: 35%; left: 4%; width: 94%; height: 49%; }
+  .palace-moon { top: 36%; left: 58%; width: 30vw; height: 30vw; }
+  .scene-art.rabbit-figure { left: 8%; bottom: 12%; width: 24%; height: 20%; }
+  .palace-tree { right: -5%; height: 35%; bottom: 14%; }
+  .change-figure { left: 77%; bottom: 14%; height: 19%; width: 14%; }
+  .paper-railing { bottom: 9%; }
+  .hotspot-change { top: auto; left: 54%; bottom: 17%; }.hotspot-rabbit { left: 14%; bottom: 13%; }.hotspot-tree { right: 4%; top: 36%; }
+  .scene-hotspot { gap: 5px; padding: 5px; }
+  .scene-hotspot span { padding: 6px 9px; font-size: 9px; }
+  .scene-art.mountain-far { height: 58%; bottom: 13%; }
+  .scene-art.pavilion-placeholder { left: 3%; bottom: 16%; width: 31%; height: 26%; }
+  .poem-scroll { top: 42%; bottom: auto; left: auto; right: 7%; width: 58%; padding: 20px; }
+  .poem-scroll blockquote { font-size: 20px; min-height: 70px; margin: 14px 0; }
+  .poem-scroll > div { margin-top: 13px; }
+  .poem-scroll button { padding: 3px; min-height: 36px; }
+  .hotspot-river { left: 6%; bottom: 18%; }
+  .market-people-artwork { left: 0; bottom: 15%; width: 100%; max-height: 49%; }
+  .market-people-artwork img { max-height: 47svh; }
+  .lantern-lines button:nth-child(n) { top: 38%; }
+  .lantern-lines button:nth-child(2n) { top: 40%; }
+  .lantern-lines::before,.lantern-lines::after { display: none; }
+  .city-tower { height: 42%; }
+  .hotspot-lantern { left: 8%; bottom: 11%; }.hotspot-wine { left: auto; right: 8%; bottom: 11%; }
+  .cake-artwork { left: 24%; top: 35%; width: 54%; height: 30%; }
+  .paper-table { inset: 30% 5% 18%; }
+  .food-orbit { left: 7%; bottom: 30%; width: 86%; justify-content: center; gap: 8px; }
+  .food-piece,.food-piece:hover,.food-piece.active { width: 60px; height: 38px; transform: none; }
+  .food-caption { left: 50%; bottom: 14%; width: 86%; }
+  .food-caption > span { font-size: 22px; }
+  .food-caption p { font-size: 11px; }
+  .food-caption > small { display: none; }
+  .scene-art.courtyard-placeholder { left: 0; bottom: 13%; width: 100%; height: 49%; }
+  .scene-art.family-placeholder { left: 29%; bottom: 14%; width: 57%; height: 26%; }
+  .warm-lamp { right: 8%; top: 39%; }
+  .hotspot-family { left: 9%; bottom: 11%; }.hotspot-empty-seat { left: auto; right: 9%; bottom: 11%; }
+  .finale-moon { width: 92vw; top: 46%; }
+  .finale-copy { top: 46%; width: 95%; }
+  .finale-copy h2 { font-size: clamp(29px,8.5vw,42px); line-height: 1.7; }
+  .finale-copy p { font-size: 11px; }
+  .finale-copy > div { margin-top: 14px; gap: 8px; }
+  .finale-copy button,.finale-copy a { padding: 8px 12px; }
+  .finale-crane-artwork { top: 13%; right: 0; width: 38%; }
+  .atlas-page > header { padding: 22px; }
+  .atlas-copy { margin: 4vh auto 0; }
+  .atlas-copy > span { font-size: 7px; }
+  .atlas-copy h1 { margin: 16px 0; font-size: 44px; }
+  .atlas-copy p { display: block; font-size: 10px; }
+  .atlas-map { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 12px; width: 86%; height: auto; min-height: 0; margin: 30px auto; }
+  .atlas-map::before,.atlas-path { display: none; }
+  .atlas-node { position: static; transform: none; padding: 17px 8px; min-width: 0; border: 1px solid #b5985c29; border-radius: 3px; background: #c9b67906; }
+  .atlas-node i { width: 42px; height: 42px; }
+  .atlas-node b { margin-top: 12px; font-size: 19px; }
+  .atlas-node small { display: block; font-size: 9px; }
+  .atlas-legend { max-width: 86%; text-align: center; font-size: 9px; }
+  .culture-card { padding: 60px 28px 28px; }
+  .culture-card h2 { font-size: 26px; }
+}
+@media (max-height: 600px) and (min-width: 761px) {
+  .portal-page { min-height: 600px; }
+  .scene-heading { top: 19%; }
+  .scene-heading h2 { font-size: 44px; margin: 14px 0; }
+  .scene-heading p { font-size: 11px; }
+  .journey-header { height: 60px; }
+  .scene-rail { gap: 4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .portal-page *, .journey-page *, .atlas-page *, .culture-card { animation: none !important; transition: none !important; }
+}
+
+/* Final composition corrections found in rendered desktop views. */
+.scene-art.mountain-far { height: 33%; bottom: 15%; overflow: hidden; opacity: .55; }
+.mountain-far img { position: absolute; bottom: 0; height: 300%; max-height: none; object-fit: fill; }
+.scene-art.palace-tree { right: 5%; bottom: 16%; width: 23%; height: 56%; opacity: .65; z-index: 7; }
+.scene-art.change-figure { left: 75%; bottom: 12%; width: 16%; height: 30%; opacity: 1; z-index: 13; }
+.poem-verse { display: block; white-space: nowrap; }
+.poem-scroll blockquote { font-size: clamp(20px,1.8vw,27px); animation: card-arrive .25s ease-out; }
+.market-sky { background: radial-gradient(circle at 82% 19%,#d8c69a 0 4%,transparent 4.2%),radial-gradient(ellipse at 66% 65%,#73453155,transparent 50%),linear-gradient(#192a31,#342624 65%,#101516); }
+.lantern-lines button { border-radius: 40%; background: repeating-linear-gradient(90deg,transparent 0 5px,#73372055 6px 7px),radial-gradient(ellipse,#eab573,#a95131); }
+.lantern-lines button::after { content: ''; position: absolute; left: 50%; bottom: -11px; height: 9px; border-left: 2px solid #a26942; }
+@media (max-width: 760px) {
+  .scene-art.mountain-far { height: 25%; bottom: 19%; }
+  .scene-art.palace-tree { right: 0; bottom: 22%; width: 32%; height: 38%; opacity: .6; }
+  .scene-art.change-figure { left: 69%; bottom: 16%; width: 24%; height: 24%; }
+  .poem-scroll blockquote { font-size: clamp(17px,4.7vw,22px); }
+}
+
+html:has(.journey-page) { scroll-behavior: auto; scrollbar-gutter: stable; }
+.scene-landscape .art-placeholder span { display: none; }
+.css-river { opacity: .14; }
+@media (max-width: 760px) {
+  html:has(.journey-page) { scrollbar-gutter: auto; }
+  .scene-landscape .css-river { opacity: .08; }
+}
