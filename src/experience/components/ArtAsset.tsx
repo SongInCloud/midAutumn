@@ -17,7 +17,7 @@ export function ArtImage({ src, alt, assetKey, className = '', scene = 0 }: { sr
   }, [active, scene])
 
   return <figure className={'art-image ' + className} data-asset-key={assetKey}>
-    {readyToLoad && !failed && <img src={src} alt={alt} decoding="async" onError={() => setFailed(true)}/>} 
+    {readyToLoad && !failed && <img src={src} alt={alt} decoding="async" onError={() => setFailed(true)}/>}
     {failed && <span className="art-fallback">{alt} · 暂未载入</span>}
   </figure>
 }

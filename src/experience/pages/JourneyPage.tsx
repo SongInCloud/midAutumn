@@ -130,8 +130,3 @@ import { Hotspot, InfoDialog, SceneHeading } from '../components/SceneUI'
     {info && <InfoDialog content={info} onClose={() => setInfo(null)}/>}
   </main></SceneContext.Provider>
 }
-
-
-
-
-
