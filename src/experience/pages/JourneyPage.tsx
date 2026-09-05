@@ -12,7 +12,8 @@ import { Hotspot, InfoDialog, SceneHeading } from '../components/SceneUI'
 /**
  * 沉浸式长卷页面。
  * 页面负责组合场景，滚动计算已移入 useJourneyScroll，便于单独学习和复用。
- */export function JourneyPage() {
+ */
+export function JourneyPage() {
   const [info, setInfo] = useState<InfoContent | null>(null)
   const [poem, setPoem] = useState(0)
   const [food, setFood] = useState(0)
