@@ -1,25 +1,25 @@
 import { CSSProperties, createContext, memo, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import craneArtwork from '../../iamge/核心角色/月宫仙鹤.png'
-import marketPeopleArtwork from '../../iamge/核心角色/灯市人物组.png'
+import craneArtwork from '../../image/核心角色/月宫仙鹤.png'
+import marketPeopleArtwork from '../../image/核心角色/灯市人物组.png'
 import {
   ArrowDown, ArrowLeft, ArrowRight, Compass,
   Map, Moon, Pause, Play, X,
 } from 'lucide-react'
 
-import treeArt from '../../iamge/月宫场景/桂花神树.png'
-import changeArt from '../../iamge/核心角色/嫦娥飞升姿.png'
-import palaceArt from '../../iamge/月宫场景/月宫主殿.png'
-import rabbitArt from '../../iamge/核心角色/玉兔捣药.png'
-import mountainsArt from '../../iamge/山水空间/远山组.png'
-import pavilionArt from '../../iamge/山水空间/山间亭台.png'
-import courtyardArt from '../../iamge/人间团圆/赏月庭院.png'
-import familyArt from '../../iamge/人间团圆/团圆家宴人物组.png'
-import cakeArt from '../../iamge/食物展示/广式月饼.png'
-import suCakeArt from '../../iamge/食物展示/苏式月饼.png'
-import dianCakeArt from '../../iamge/食物展示/滇式月饼.png'
-import jingCakeArt from '../../iamge/食物展示/京式月饼.png'
+import treeArt from '../../image/月宫场景/桂花神树.png'
+import changeArt from '../../image/核心角色/嫦娥飞升姿.png'
+import palaceArt from '../../image/月宫场景/月宫主殿.png'
+import rabbitArt from '../../image/核心角色/玉兔捣药.png'
+import mountainsArt from '../../image/山水空间/远山组.png'
+import pavilionArt from '../../image/山水空间/山间亭台.png'
+import courtyardArt from '../../image/人间团圆/赏月庭院.png'
+import familyArt from '../../image/人间团圆/团圆家宴人物组.png'
+import cakeArt from '../../image/食物展示/广式月饼.png'
+import suCakeArt from '../../image/食物展示/苏式月饼.png'
+import dianCakeArt from '../../image/食物展示/滇式月饼.png'
+import jingCakeArt from '../../image/食物展示/京式月饼.png'
 
 gsap.registerPlugin(ScrollTrigger)
 const SceneContext = createContext<number | null>(null)
